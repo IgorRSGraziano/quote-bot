@@ -3,6 +3,7 @@ package whatsapp
 import (
 	"context"
 	"fmt"
+	"quote-bot/config"
 
 	"math/rand"
 
@@ -24,12 +25,11 @@ func eventHandler(client *whatsmeow.Client) func(interface{}) {
 }
 
 func isFromEnabledGroup(msg *events.Message) bool {
-	//TODO: Colocar em um env
-	return msg.Info.MessageSource.Chat.User == "120363346101975622"
+	return msg.Info.MessageSource.Chat.User == config.Data.Group
 }
 
 func isActivateCommand(msg *events.Message) bool {
-	return msg.Message.GetConversation() == "!nathan"
+	return msg.Message.GetConversation() == config.Data.Command
 }
 
 func handleMessage(client *whatsmeow.Client, msg *events.Message) {
@@ -37,17 +37,12 @@ func handleMessage(client *whatsmeow.Client, msg *events.Message) {
 		return
 	}
 
-	quotes := []string{
-		"Frase 1",
-		"Frase 2",
-		"Frase 3",
-	}
+	quotes := config.Data.Quotes
 
 	randomQuote := &quotes[rand.Intn(len(quotes))]
 
 	ctx := context.Background()
 
-	//TODO: Colocar quotedMessage
 	r, err := client.SendMessage(ctx, msg.Info.Chat, &waE2E.Message{
 		Conversation: randomQuote,
 	})
