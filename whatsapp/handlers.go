@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"quote-bot/config"
+	"quote-bot/utils"
 
 	"math/rand"
 
@@ -32,8 +33,8 @@ func isActivateCommand(msg *events.Message) bool {
 	return msg.Message.GetConversation() == config.Data.Command
 }
 
-func handleMessage(client *whatsmeow.Client, msg *events.Message) {
-	if !isFromEnabledGroup(msg) || !isActivateCommand(msg) {
+func handleMessage(client *whatsmeow.Client, event *events.Message) {
+	if !isFromEnabledGroup(event) || !isActivateCommand(event) {
 		return
 	}
 
@@ -43,8 +44,15 @@ func handleMessage(client *whatsmeow.Client, msg *events.Message) {
 
 	ctx := context.Background()
 
-	r, err := client.SendMessage(ctx, msg.Info.Chat, &waE2E.Message{
-		Conversation: randomQuote,
+	r, err := client.SendMessage(ctx, event.Info.Chat, &waE2E.Message{
+		ExtendedTextMessage: &waE2E.ExtendedTextMessage{
+			Text: randomQuote,
+			ContextInfo: &waE2E.ContextInfo{
+				StanzaID:      &event.Info.ID,
+				Participant:   utils.Ptr(event.Info.Sender.String()),
+				QuotedMessage: event.Message,
+			},
+		},
 	})
 
 	fmt.Println(r)
