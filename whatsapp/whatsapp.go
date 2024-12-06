@@ -16,7 +16,7 @@ import (
 
 func startDb() *sqlstore.Container {
 	dbLog := waLog.Stdout("Database", "INFO", true)
-	container, err := sqlstore.New("sqlite3", "file:examplestore.db?_foreign_keys=on", dbLog)
+	container, err := sqlstore.New("sqlite3", "file:session.db?_foreign_keys=on", dbLog)
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,6 @@ package whatsapp
 
 import (
 	"context"
-	"fmt"
 	"quote-bot/config"
 	"quote-bot/utils"
 
@@ -18,8 +17,6 @@ func eventHandler(client *whatsmeow.Client) func(interface{}) {
 		switch v := evt.(type) {
 		case *events.Message:
 			handleMessage(client, v)
-		default:
-			fmt.Println("Received a message!", v)
 		}
 
 	}
@@ -44,7 +41,7 @@ func handleMessage(client *whatsmeow.Client, event *events.Message) {
 
 	ctx := context.Background()
 
-	r, err := client.SendMessage(ctx, event.Info.Chat, &waE2E.Message{
+	_, err := client.SendMessage(ctx, event.Info.Chat, &waE2E.Message{
 		ExtendedTextMessage: &waE2E.ExtendedTextMessage{
 			Text: randomQuote,
 			ContextInfo: &waE2E.ContextInfo{
@@ -54,8 +51,6 @@ func handleMessage(client *whatsmeow.Client, event *events.Message) {
 			},
 		},
 	})
-
-	fmt.Println(r)
 
 	if err != nil {
 		client.Log.Errorf("Error sending message: %v", err)
