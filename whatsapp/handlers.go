@@ -2,6 +2,7 @@ package whatsapp
 
 import (
 	"context"
+	"fmt"
 	"quote-bot/config"
 	"quote-bot/utils"
 
@@ -23,6 +24,7 @@ func eventHandler(client *whatsmeow.Client) func(interface{}) {
 }
 
 func isFromEnabledGroup(msg *events.Message) bool {
+	fmt.Println(msg.Info.MessageSource.Chat.User, config.Data.Group)
 	return msg.Info.MessageSource.Chat.User == config.Data.Group
 }
 
